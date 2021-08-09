@@ -1,0 +1,5 @@
+## Interface: 30300
+## Title: DestroyButton
+## Notes: Addon for easy prospecting or milling
+
+DestroyButton.lua
