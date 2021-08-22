@@ -1,6 +1,27 @@
 local addonName = ...
 local destroy = CreateFrame("Button", addonName, UIParent, "SecureActionButtonTemplate")
 
+local profInfo = {
+    ["prospect"] = {
+        tipString = ITEM_PROSPECTABLE,
+        spellId = 31252,
+        stack = 5,
+        fontColor = { r = 1, g = 1, b = 1}
+    },
+    ["mill"] = {
+        tipString = ITEM_MILLABLE,
+        spellId = 51005,
+        stack = 5,
+        fontColor = { r = 1, g = 1, b = 1}
+    },
+    ["lockpick"] = {
+        tipString = LOCKED,
+        spellId = 1804,
+        stack = 1,
+        fontColor = { r = 1, g = 0.5, b = 0.25 }
+    }
+}
+
 local function normalizeRGBValues(font)
     local function f(v)
         return floor(v * 100 + 0.5) / 100
@@ -8,17 +29,6 @@ local function normalizeRGBValues(font)
     local r, g, b = font:GetTextColor()
     return f(r),f(g),f(b)
 end
-
-local profInfo = {
-    ["prospect"] = {
-        tipString = ITEM_PROSPECTABLE,
-        spellId = 31252
-    },
-    ["mill"] = {
-        tipString = ITEM_MILLABLE,
-        spellId = 51005
-    }
-}
 
 function destroy:InvSlotHasText(bagSlot, itemSlot, value, startsWith)
     if not self.tooltip then
@@ -55,11 +65,12 @@ end
 function destroy:findmat()
     local function f(bagSlot, itemSlot)
         local _, itemCount = GetContainerItemInfo(bagSlot,itemSlot)
-        if itemCount and itemCount >= 5 then
+        if itemCount and itemCount >= self.destroyInfo.stack then
             local font = self:InvSlotHasText(bagSlot, itemSlot, self.destroyInfo.tipString)
             if font then
                 local r,g,b = normalizeRGBValues(font)
-                return r == 1 and g == 1 and b == 1
+                local destroyColor = self.destroyInfo.fontColor
+                return r == destroyColor.r and g == destroyColor.g and b == destroyColor.b
             end
         end
     end
