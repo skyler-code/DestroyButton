@@ -6,13 +6,13 @@ local profInfo = {
         tipString = ITEM_PROSPECTABLE,
         spellId = 31252,
         stack = 5,
-        fontColor = { r = 1, g = 1, b = 1}
+        fontColor = { r = 1, g = 1, b = 1 }
     },
     ["mill"] = {
         tipString = ITEM_MILLABLE,
         spellId = 51005,
         stack = 5,
-        fontColor = { r = 1, g = 1, b = 1}
+        fontColor = { r = 1, g = 1, b = 1 }
     },
     ["lockpick"] = {
         tipString = LOCKED,
@@ -22,12 +22,16 @@ local profInfo = {
     }
 }
 
-local function normalizeRGBValues(font)
+local function NormalizeRGBValues(font)
     local function f(v)
         return floor(v * 100 + 0.5) / 100
     end
     local r, g, b = font:GetTextColor()
     return f(r),f(g),f(b)
+end
+
+local function CanRun()
+    return not LootFrame:IsVisible() and not CastingBarFrame:IsVisible() and not UnitCastingInfo("player") and not MerchantFrame:IsVisible()
 end
 
 function destroy:InvSlotHasText(bagSlot, itemSlot, value, startsWith)
@@ -68,7 +72,7 @@ function destroy:findmat()
         if itemCount and itemCount >= self.destroyInfo.stack then
             local font = self:InvSlotHasText(bagSlot, itemSlot, self.destroyInfo.tipString)
             if font then
-                local r,g,b = normalizeRGBValues(font)
+                local r,g,b = NormalizeRGBValues(font)
                 local destroyColor = self.destroyInfo.fontColor
                 return r == destroyColor.r and g == destroyColor.g and b == destroyColor.b
             end
@@ -83,10 +87,6 @@ function destroy:findmat()
     end
 end
 
-function destroy:CanRun()
-    return not LootFrame:IsVisible() and not CastingBarFrame:IsVisible() and not UnitCastingInfo("player") and not MerchantFrame:IsVisible()
-end
-
 function destroy:Setup(destroyType)
     self.destroyInfo = profInfo[destroyType]
     if not self.destroyInfo then
@@ -99,7 +99,7 @@ function destroy:Setup(destroyType)
     end
 
     local text = ""
-    if self:CanRun() then
+    if CanRun() then
         local b,s = self:findmat()
         if b and s then
             local destroy_spell = GetSpellInfo(self.destroyInfo.spellId)
