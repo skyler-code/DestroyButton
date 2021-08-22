@@ -1,5 +1,4 @@
-Prospecting macro:
-
+Prospecting macro:\
 #showtooltip Prospecting\
 /run DestroyButton:Setup("prospect")\
 /click DestroyButton
